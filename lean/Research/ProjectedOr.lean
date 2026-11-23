@@ -717,3 +717,102 @@ theorem four_rows {n m : ℕ} (small : m ≤ 4) (S : Fin m → Finset (Fin n))
   three_shared S two thin (fun i => by have := shared_le S thin i; omega) C out hf hc
 
 end PlaneResearch.Projection
+
+namespace PlaneResearch.Projection
+
+open PEqualNP.CircuitLowerBounds PEqualNP.MetaComplexity
+
+/-- Assign an old input either a constant or an input of the new circuit. -/
+def assignInput {n m : ℕ} (σ : Fin n → Bool ⊕ Fin m) (x : Fin m → Bool) (i : Fin n) : Bool :=
+  (σ i).elim id x
+
+private def inputTable {n m : ℕ} (σ : Fin n → Bool ⊕ Fin m) : List (Bool ⊕ ℕ) :=
+  List.ofFn fun i => (σ i).map id Fin.val
+
+private lemma startTable {n m : ℕ} (σ : Fin n → Bool ⊕ Fin m) (x : Fin m → Bool) :
+    ElimInv m (List.ofFn x) (List.ofFn (assignInput σ x)) (inputTable σ, []) := by
+  refine ⟨by simp,by simp [inputTable],?_⟩
+  intro i
+  by_cases hi : i < n
+  · rw [show (inputTable σ).getD i (.inl false) = (σ ⟨i,hi⟩).map id Fin.val from
+          ofFn_getD_lt _ _ _ hi, ofFn_getD_lt _ _ _ hi]
+    cases e : σ ⟨i,hi⟩ with
+    | inl b => simp [assignInput,e,statVal,statValid]
+    | inr j => simp [assignInput,e,statVal,statValid,wiresFrom_nil,ofFn_getD_lt _ _ _ j.isLt]
+  · rw [List.getD_eq_default _ _ (by simp [inputTable]; omega),List.getD_eq_default _ _ (by simp; omega)]
+    exact ⟨trivial,rfl⟩
+
+/-- Substitution of constants and input aliases preserves all nonconstant outputs.
+If some output can distinguish two old inputs agreeing at every unpinned position,
+at least one gate disappears. No dependency on the aliases' assigned values is required
+in those two test inputs. -/
+theorem specialize_outputs {n m r : ℕ} (σ : Fin n → Bool ⊕ Fin m) (gs0 : List Gate)
+    (out : Fin r → ℕ) (ok : FanInTwo ⟨gs0,0⟩)
+    (nonc : ∀ j, ∃ x y, (Circuit.mk gs0 (out j)).eval (List.ofFn (assignInput σ x)) ≠
+      (Circuit.mk gs0 (out j)).eval (List.ofFn (assignInput σ y))) :
+    ∃ (gs1 : List Gate) (out1 : Fin r → ℕ), FanInTwo ⟨gs1,0⟩ ∧ gs1.length ≤ gs0.length ∧
+      (∀ j x, (Circuit.mk gs1 (out1 j)).eval (List.ofFn x) =
+          (Circuit.mk gs0 (out j)).eval (List.ofFn (assignInput σ x))) ∧
+      ((∃ (j : Fin r) (u v : Fin n → Bool), (∀ i a, σ i = .inr a → u i = v i) ∧
+        (Circuit.mk gs0 (out j)).eval (List.ofFn u) ≠ (Circuit.mk gs0 (out j)).eval (List.ofFn v)) →
+        gs1.length + 1 ≤ gs0.length) := by
+  classical
+  let gs := gs0.map normGate
+  let acc := elimPass m gs (inputTable σ, [])
+  have allowed : ∀ g ∈ gs, NOkGate g := by
+    intro g hg
+    obtain ⟨h,hh,rfl⟩ := List.mem_map.mp hg
+    exact normGate_nok h (ok h hh)
+  have eval (j : Fin r) (x : Fin m → Bool) :
+      statVal (wiresFrom acc.2 (List.ofFn x)) (acc.1.getD (out j) (.inl false)) =
+        (Circuit.mk gs0 (out j)).eval (List.ofFn (assignInput σ x)) := by
+    have inv := elimInv_pass m (List.ofFn x) gs _ (inputTable σ, [])
+      (fun g hg => (allowed g hg).1) (startTable σ x)
+    exact (inv.2.2 (out j)).2.trans (by rw [show gs = gs0.map normGate from rfl,wiresFrom_norm]; rfl)
+  have ex (j : Fin r) : ∃ k, acc.1.getD (out j) (.inl false) = .inr k := by
+    cases h : acc.1.getD (out j) (.inl false) with
+    | inr k => exact ⟨k,rfl⟩
+    | inl b =>
+      obtain ⟨x,y,ne⟩ := nonc j
+      have a := eval j x
+      have c := eval j y
+      rw [h] at a c
+      exact (ne (a.symm.trans c)).elim
+  choose out1 hout using ex
+  refine ⟨acc.2,out1,elimPass_ok m gs _ (by simp),?_,?_,?_⟩
+  · simpa [acc,gs] using elimPass_len m gs (inputTable σ,[])
+  · intro j x
+    have h := eval j x
+    rw [hout] at h
+    exact h
+  · rintro ⟨j,u,v,same,ne⟩
+    let P : Set ℕ := {i | ∃ h : i < n, ∃ b, σ ⟨i,h⟩ = .inl b}
+    have outfree : out j ∉ P := by
+      rintro ⟨ho,b,eq⟩
+      have pin (x : Fin m → Bool) : (Circuit.mk gs0 (out j)).eval (List.ofFn (assignInput σ x)) = b := by
+        change (wiresFrom gs0 _).getD (out j) false = b
+        rw [wiresFrom_getD_lt _ _ _ (by simpa),ofFn_getD_lt _ _ _ ho]
+        simp [assignInput,eq]
+      obtain ⟨x,y,bad⟩ := nonc j
+      exact bad ((pin x).trans (pin y).symm)
+    have reads : ∃ g ∈ gs, ∃ i ∈ g.inputs, i ∈ P := by
+      by_contra! no
+      have eq (i : ℕ) (hi : i ∉ P) : (List.ofFn u).getD i false = (List.ofFn v).getD i false := by
+        by_cases h : i < n
+        · rw [ofFn_getD_lt _ _ _ h,ofFn_getD_lt _ _ _ h]
+          cases e : σ ⟨i,h⟩ with
+          | inl b => exact (hi ⟨h,b,e⟩).elim
+          | inr a => exact same _ a e
+        · simp [List.getD_eq_default,show n ≤ i by omega]
+      have agrees := (wiresFrom_agree gs P (List.ofFn u) (List.ofFn v) (by simp)
+        (fun i h => by obtain ⟨hi,_,_⟩ := h; simpa using hi) eq no).2 (out j) outfree
+      rw [show gs = gs0.map normGate from rfl,wiresFrom_norm,wiresFrom_norm] at agrees
+      exact ne agrees
+    obtain ⟨g,hg,i,hi,lt,b,pin⟩ := reads
+    have eq : (inputTable σ).getD i (.inl false) = .inl b := by
+      rw [inputTable,ofFn_getD_lt _ _ _ lt,pin]
+      rfl
+    simpa [acc,gs] using elimPass_len_lt m i gs (inputTable σ,[]) allowed
+      (by simp [inputTable]; exact lt) ⟨b,eq⟩ ⟨g,hg,hi⟩
+
+end PlaneResearch.Projection
