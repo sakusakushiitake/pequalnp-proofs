@@ -127,7 +127,7 @@ def possible {α : Type} [DecidableEq α] (k : ℕ) (used : Finset α) :
   | [] => decide (used.card ≤ k)
   | row :: rest => row.any (fun e => decide ((used ∪ e).card ≤ k) && possible k (used ∪ e) rest)
 
-private lemma possible_of {α : Type} [DecidableEq α] (k : ℕ) (H : Finset α) (hk : H.card ≤ k)
+lemma possible_of {α : Type} [DecidableEq α] (k : ℕ) (H : Finset α) (hk : H.card ≤ k)
     (opts : List (List (Finset α))) (works : ∀ row ∈ opts, ∃ e ∈ row, e ⊆ H)
     (used : Finset α) (sub : used ⊆ H) : possible k used opts = true := by
   induction opts generalizing used with
