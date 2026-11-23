@@ -635,4 +635,25 @@ theorem two_high_per_row {n r : ℕ} (S : Fin r → Finset (Fin n)) (H : Finset 
     rw [Nat.min_eq_right (two i),Finset.card_sdiff_add_card_inter]
   simpa only [cost] using two_high_points S H thin low C out hf hc
 
+
+/-- After paying for points outside H, the remaining gates still compute every
+row at the zero input and each singleton input belonging to H. -/
+theorem residual_on_singletons {n r : ℕ} (T : Fin r → Finset (Fin n)) (H : Finset (Fin n))
+    (thin : ∀ i j, i ≠ j → (T i ∩ T j).card ≤ 1) (low : ∀ p ∉ H, degree T p ≤ 2)
+    (C : Circuit) (out : Fin r → ℕ) (hf : FanInTwo C)
+    (hc : ∀ i x, (Circuit.mk C.gates (out i)).eval (List.ofFn x) = sumRow (T i) x) :
+    ∃ (gs : List Gate) (o : Fin r → ℕ), FanInTwo ⟨gs,0⟩ ∧
+      gs.length + (∑ i, (((T i \ H).card + min 1 (T i ∩ H).card)-1)) ≤ C.size ∧
+      ∀ i (z : Option (Fin n)), (Circuit.mk gs (o i)).eval
+        (List.ofFn (fun p : Fin n => decide (z = some p ∧ p ∈ H))) =
+        decide (∃ a ∈ T i ∩ H, z = some a) := by
+  classical
+  obtain ⟨gs,o,ok,le,ev⟩ := high_residue T H thin low C out hf hc
+  refine ⟨gs,o,ok,le,fun i z => ?_⟩
+  have eq : (fun p : Fin n => decide (z = some p ∧ p ∈ H)) = encode (sources H) (fun _ => false) z := by
+    funext p
+    by_cases mem : p ∈ H <;> simp [encode,sources,mem]
+  rw [eq]
+  exact ev i z
+
 end PlaneResearch.ParameterOr
