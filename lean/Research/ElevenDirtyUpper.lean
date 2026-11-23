@@ -19,4 +19,28 @@ theorem correct (x : V → Bool) : C.eval (List.ofFn x)=true ↔
 /-- A binary AND inside the explicit correct circuit fires on a singleton. -/
 theorem dirty_singleton : (C.gates.get ⟨3,by decide⟩).op=.and ∧ W C (11+3) (single (9:V))=true := ⟨rfl,by decide +kernel⟩
 
+private def andCheck (op : GateOp) (value : Bool) : Bool :=
+  match op with | .and => value | _ => true
+
+private theorem remaining_checked : ∀ k : Fin C.gates.length, k.val ≠ 3 →
+    andCheck (C.gates.get k).op (impliesD (atWire certificate (11+k.val)) (edgeTerms E))=true := by
+  decide +kernel
+
+/-- Gate 3 is the unique AND accepting any input on which the graph function is false. -/
+theorem unique_dirty (k : Fin C.gates.length) :
+    ((C.gates.get k).op=.and ∧ ∃ x : V → Bool, W C (11+k.val) x=true ∧ C.eval (List.ofFn x)=false)
+      ↔ k.val=3 := by
+  constructor
+  · rintro ⟨op,x,active,off⟩
+    by_contra bad
+    have ok := remaining_checked k bad
+    rw [op] at ok
+    have term := (wire C certificate checked x (11+k.val) (by have := k.isLt; omega)).mp active
+    have on' := (correct x).mpr ((edges E x).mp (entails ok term))
+    exact Bool.noConfusion (on'.symm.trans off)
+  · intro eq
+    have ix : k=⟨3,by decide⟩ := Fin.ext eq
+    subst k
+    exact ⟨dirty_singleton.1,single 9,dirty_singleton.2,by decide +kernel⟩
+
 end PlaneResearch.ElevenDirtyUpper

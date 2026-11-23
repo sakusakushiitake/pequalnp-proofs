@@ -15,7 +15,7 @@ private lemma pair_independent (p q : V) (no : ¬adjacent p q) : Independent gra
   · exact fun h => no (Or.symm h)
   · exact graph.loopless.irrefl _
 
-private lemma response (C : Circuit) (hc : Correct C) :
+lemma response (C : Circuit) (hc : Correct C) :
     (∀ p : V, W C C.output (single p)=false) ∧
       ∀ p q : V, adjacent p q → W C C.output (pair p q)=true := by
   constructor
@@ -30,6 +30,13 @@ private lemma response (C : Circuit) (hc : Correct C) :
   · intro p q pq
     exact (hc _).mpr ⟨p,q,pq,by simp [pair],by simp [pair]⟩
 
+lemma output_in_range (C : Circuit) (hc : Correct C) : C.output<26+C.gates.length := by
+  by_contra! out
+  have edge := (response C hc).2 0 13 (by decide +kernel)
+  change (wiresFrom C.gates (List.ofFn (pair (0 : V) 13))).getD C.output false=true at edge
+  rw [List.getD_eq_default _ _ (by simpa [length_wiresFrom] using out)] at edge
+  contradiction
+
 /-- In the assigned 26-vertex graph any circuit of size at most 63 that
 computes the edge function has an AND firing on an independent input. -/
 theorem dirty_required (C : Circuit) (hm : Mono C) (hc : Correct C) (small : C.size≤63) :
@@ -43,13 +50,7 @@ theorem dirty_required (C : Circuit) (hm : Mono C) (hc : Correct C) (small : C.s
     exact no {p,q} (pair_independent p q miss)
       ⟨k,C.gates[k],List.getElem?_eq_getElem hk,op,eq ▸ on'⟩
   obtain ⟨off,on'⟩ := response C hc
-  have valid : C.output<26+C.gates.length := by
-    by_contra! out
-    have edge := on' 0 13 (by decide +kernel)
-    change (wiresFrom C.gates (List.ofFn (pair (0 : V) 13))).getD C.output false=true at edge
-    rw [List.getD_eq_default _ _ (by simpa [length_wiresFrom] using out)] at edge
-    contradiction
-  let o : Node 26 C := ⟨C.output,valid⟩
+  let o : Node 26 C := ⟨C.output,output_in_range C hc⟩
   have lower := PlaneResearch.PlaneCleanBound.at_least_64 C o (fun g h => (hm g h).1)
     (fun g h => (hm g h).2) clean off on'
   omega
