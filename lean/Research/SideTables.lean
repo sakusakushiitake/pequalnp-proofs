@@ -21,7 +21,7 @@ def run {d : ℕ} : List Gate → List (Table d) → List (Table d)
   | [], w => w
   | g::gs, w => run gs (w ++ [gateVal g w])
 
-private lemma ext_run {d : ℕ} (gs : List Gate) (w : List (Table d)) :
+lemma ext_run {d : ℕ} (gs : List Gate) (w : List (Table d)) :
     ∃ tail, run gs w = w ++ tail ∧ tail.length = gs.length := by
   induction gs generalizing w with
   | nil => exact ⟨[],by simp [run],rfl⟩
@@ -105,7 +105,7 @@ private lemma born {d : ℕ} (g : Gate) (w : List (Table d)) (f : Table d)
     | cons a rest =>
       exact ⟨_,0,source a,Or.inr rfl,diff a,Ne.symm fz,Or.inr (Or.inr (by simpa [gateVal,op,ins] using eq.symm))⟩
 
-private lemma first_recipe {d : ℕ} (gs : List Gate) (w : List (Table d)) (f : Table d)
+lemma first_recipe {d : ℕ} (gs : List Gate) (w : List (Table d)) (f : Table d)
     (ok : FanInTwo ⟨gs,0⟩) (fz : f ≠ 0) (ft : f ≠ top d)
     (fresh : f ∉ w) (hit : f ∈ run gs w) :
     ∃ a b, (a ∈ run gs w ∨ a = 0) ∧ (b ∈ run gs w ∨ b = 0) ∧ a ≠ f ∧ b ≠ f ∧ recipe f a b := by
