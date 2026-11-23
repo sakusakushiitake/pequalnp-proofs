@@ -13,7 +13,7 @@ def Owns {n : ℕ} (C : Circuit) (t : ℕ) (u v : Fin n) : Prop :=
   W C (n+t) (pair u v) = true ∧ ∀ t' g', C.gates[t']?=some g' → g'.op=.and →
     Relation.TransGen (Link n C) (n+t') (n+t) → W C (n+t') (pair u v) = false
 
-private lemma input {n : ℕ} (C : Circuit) (i : Fin n) (x : Fin n → Bool) : W C i.val x=x i := by
+lemma input {n : ℕ} (C : Circuit) (i : Fin n) (x : Fin n → Bool) : W C i.val x=x i := by
   change (wiresFrom C.gates (List.ofFn x)).getD i.val false = _
   rw [getD_wiresFrom_lt _ _ _ (by simpa using i.isLt),List.getD_eq_getElem _ _ (by simpa using i.isLt),
     List.getElem_ofFn]
@@ -22,7 +22,7 @@ lemma gate {n : ℕ} (C : Circuit) (k : ℕ) (hk : k<C.gates.length) (x : Fin n 
     W C (n+k) x = (C.gates[k]).op.eval ((C.gates[k]).inputs.map (fun j => if j<n+k then W C j x else false)) := by
   simpa only [W,List.length_ofFn,Circuit.wires,wiresFrom] using getD_wiresFrom_gate C.gates (List.ofFn x) k hk
 
-private lemma or_on {n : ℕ} (C : Circuit) (k : ℕ) (hk : k<C.gates.length)
+lemma or_on {n : ℕ} (C : Circuit) (k : ℕ) (hk : k<C.gates.length)
     (ho : (C.gates[k]).op=.or) (x : Fin n → Bool) :
     W C (n+k) x = true ↔ ∃ j ∈ (C.gates[k]).inputs, j<n+k ∧ W C j x = true := by
   rw [gate C k hk,ho]
