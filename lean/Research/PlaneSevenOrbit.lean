@@ -6,9 +6,9 @@ namespace PlaneResearch.SevenOrbit
 open PEqualNP.CircuitLowerBounds PEqualNP.MetaComplexity PlaneResearch.Projection
 open PlaneResearch.PlaneOrderThree (lines)
 
-private def Lower (s : Set13) : Prop :=
+def Lower (s : Set13) (b : ℕ := 21) : Prop :=
   ∀ (C : Circuit) (o : Points → ℕ), FanInTwo C →
-    (∀ i ∈ s, ∀ x, (Circuit.mk C.gates (o i)).eval (List.ofFn x) = sumRow (lines i) x) → 21 ≤ C.size
+    (∀ i ∈ s, ∀ x, (Circuit.mk C.gates (o i)).eval (List.ofFn x) = sumRow (lines i) x) → b ≤ C.size
 
 private lemma rename_sum (a : Set13) (p : Points → Points) (x : Points → Bool) :
     sumRow a (fun j => x (p j)) = sumRow (a.image p) x := by
@@ -20,9 +20,9 @@ private lemma rename_sum (a : Set13) (p : Points → Points) (x : Points → Boo
     obtain ⟨j,hj,rfl⟩ := Finset.mem_image.mp hv
     exact ⟨j,hj,hit⟩
 
-private lemma transfer (s : Set13) (non : s.Nonempty) (p l inv : Points → Points)
+theorem transfer {b : ℕ} (s : Set13) (non : s.Nonempty) (p l inv : Points → Points)
     (undo : ∀ i, inv (l i)=i) (col : ∀ i, (lines i).image p=lines (l i))
-    (parent : Lower (s.image l)) : Lower s := by
+    (parent : Lower (s.image l) b) : Lower s b := by
   classical
   intro C o hf hc
   obtain ⟨j0,h0⟩ := non
