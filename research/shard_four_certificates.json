@@ -1,0 +1,128 @@
+{
+  "gap": "L-meta-1422",
+  "generator": "five_input_shard.py",
+  "checker": "verify_circuit_lrat.lean",
+  "solver": "CaDiCaL bundled with Lean 4.36.0",
+  "results": [
+    {
+      "index": 0,
+      "truth_table": "0xaaa8a880",
+      "monotone_upper": 8,
+      "one_not_excluded_through": 7,
+      "cnf_variables": 1111,
+      "cnf_clauses": 10093,
+      "cnf_sha256": "e315acacfbf5d82a396e14e741859af9ce9fa6f9ecd009ad412e1f8259a99598",
+      "lrat_actions": 371798,
+      "lrat_bytes": 32764238,
+      "lrat_sha256": "0633d4bb2e756d77d9a141e182ee9b7a3d3842bab71a6e3a304899f524e18105"
+    },
+    {
+      "index": 1,
+      "truth_table": "0xe888a888",
+      "monotone_upper": 6,
+      "one_not_excluded_through": 5,
+      "cnf_variables": 819,
+      "cnf_clauses": 6583,
+      "cnf_sha256": "50027e9c96a6838c27b244d13eb18187ce09761c8371b22aa9ba98bb6e110d06",
+      "lrat_actions": 19699,
+      "lrat_bytes": 787455,
+      "lrat_sha256": "0a10152d65470ae256ad447d4d3c7b67b111ccad7ba6b9f9e19d402048e5c48d"
+    },
+    {
+      "index": 2,
+      "truth_table": "0xe888e880",
+      "monotone_upper": 8,
+      "one_not_excluded_through": 7,
+      "cnf_variables": 1111,
+      "cnf_clauses": 10093,
+      "cnf_sha256": "dcf8740f057ba693d37d85afa1e22ec035a9c7cc93c0290d2bc66773bd1381cc",
+      "lrat_actions": 379660,
+      "lrat_bytes": 37180207,
+      "lrat_sha256": "4c6059042d582964f6667622e4db80c0f35f6ce09e82a5f7355d31f6eb28154c"
+    },
+    {
+      "index": 3,
+      "truth_table": "0xe8a8a880",
+      "monotone_upper": 9,
+      "one_not_excluded_through": 8,
+      "cnf_variables": 1263,
+      "cnf_clauses": 12052,
+      "cnf_sha256": "6d694eda9767caeab15eb99d9c347aa4355c7660b35352c818f6d80d8e67ea19",
+      "lrat_actions": 4170766,
+      "lrat_bytes": 553529704,
+      "lrat_sha256": "6240603b7cabd3a2fa5551c52b4363597d9d6c65da29c73d07dcef58d96d3b92"
+    },
+    {
+      "index": 4,
+      "truth_table": "0xe8a8c880",
+      "monotone_upper": 8,
+      "one_not_excluded_through": 7,
+      "cnf_variables": 1111,
+      "cnf_clauses": 10093,
+      "cnf_sha256": "f45711ca8ef6ec8a977dc73499e8a2aa03aa725c996915f402cb23de0aab1f58",
+      "lrat_actions": 298375,
+      "lrat_bytes": 26654264,
+      "lrat_sha256": "a040669d193b9ae71381e241fb1e32db976eb54d3763151f1e06c74f47f097c0"
+    },
+    {
+      "index": 5,
+      "truth_table": "0xe8a8e800",
+      "monotone_upper": 7,
+      "one_not_excluded_through": 6,
+      "cnf_variables": 963,
+      "cnf_clauses": 8270,
+      "cnf_sha256": "46e26a029e395c3fc038dd9b3b48596007fff6e7bdb36ee2983442040859bdbc",
+      "lrat_actions": 84664,
+      "lrat_bytes": 6012945,
+      "lrat_sha256": "79bf6458b656cdad8d5daa24908cd840ecd51b7094dd22fca5f32bced1b87b20"
+    },
+    {
+      "index": 6,
+      "truth_table": "0xeaa8c080",
+      "monotone_upper": 7,
+      "one_not_excluded_through": 6,
+      "cnf_variables": 963,
+      "cnf_clauses": 8270,
+      "cnf_sha256": "bf954d6b28174e131d185a7cfc0de1d6addd5eee88281fac5a550c444a6010b1",
+      "lrat_actions": 66265,
+      "lrat_bytes": 4059468,
+      "lrat_sha256": "b8025cc335dc5c42c740623acebcace89890abde00f7a40e9faa9303ccb4d588"
+    },
+    {
+      "index": 7,
+      "truth_table": "0xeaaac000",
+      "monotone_upper": 4,
+      "one_not_excluded_through": 3,
+      "cnf_variables": 543,
+      "cnf_clauses": 3617,
+      "cnf_sha256": "7e406a4a4ba2a3145f5dd3b124fd7fedd20988ba4a61043b3059f0014d3d3c07",
+      "lrat_actions": 2526,
+      "lrat_bytes": 32644,
+      "lrat_sha256": "1a2182aef2624f33e27a6db16d549109f58683a1e4cc74c4b4bc6ccacb6ab1fe"
+    },
+    {
+      "index": 8,
+      "truth_table": "0xeac8e000",
+      "monotone_upper": 7,
+      "one_not_excluded_through": 6,
+      "cnf_variables": 963,
+      "cnf_clauses": 8270,
+      "cnf_sha256": "6cbca3bbe3d424c615d035abe025c7ec14ccac266151bba2fde4b7a8af7ebc6c",
+      "lrat_actions": 62534,
+      "lrat_bytes": 4268006,
+      "lrat_sha256": "3dcd810c81aef530bb34789a34eb599fa4fab6f241304bfb999b138dc50b7f95"
+    },
+    {
+      "index": 9,
+      "truth_table": "0xaaa8a888",
+      "monotone_upper": 6,
+      "one_not_excluded_through": 5,
+      "cnf_variables": 819,
+      "cnf_clauses": 6583,
+      "cnf_sha256": "9f27b22b684f5547207ba34ddc75a3509ef8d77d43a19031d9e6523bbddf9adb",
+      "lrat_actions": 14322,
+      "lrat_bytes": 610688,
+      "lrat_sha256": "a82ad50778c25fe5805ad5fb8acdc7ad5345c41543e7dcd5826fad300da7630d"
+    }
+  ]
+}
