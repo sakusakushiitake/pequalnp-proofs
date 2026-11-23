@@ -12,7 +12,7 @@ abbrev Mono (C : Circuit) := ∀ g ∈ C.gates, (g.op=.and ∨ g.op=.or) ∧ g.i
 def Fires (C : Circuit) (x : V → Bool) :=
   ∃ k g, C.gates[k]?=some g ∧ g.op=.and ∧ W C (26+k) x=true
 
-private lemma relabel_correct (C : Circuit) (hc : Correct C) (σ : Equiv.Perm V)
+lemma relabel_correct (C : Circuit) (hc : Correct C) (σ : Equiv.Perm V)
     (pres : ∀ a b, adjacent (σ a) (σ b) ↔ adjacent a b) : Correct (rename σ C) := by
   intro x
   rw [PlaneResearch.RelabelWires.eval,hc]
@@ -22,10 +22,22 @@ private lemma relabel_correct (C : Circuit) (hc : Correct C) (σ : Equiv.Perm V)
   · rintro ⟨p,q,pq,hp,hq⟩
     refine ⟨σ.symm p,σ.symm q,(pres _ _).mp (by simpa using pq),by simpa using hp,by simpa using hq⟩
 
-private lemma relabel_mono (C : Circuit) (hm : Mono C) (σ : Equiv.Perm V) : Mono (rename σ C) := by
+lemma relabel_mono (C : Circuit) (hm : Mono C) (σ : Equiv.Perm V) : Mono (rename σ C) := by
   intro g hg
   obtain ⟨a,ha,rfl⟩ := List.mem_map.mp hg
   simpa [gateMap] using hm a ha
+
+lemma move_fires (C : Circuit) (hm : Mono C) (σ : Equiv.Perm V) (p q : V) (S : Finset V)
+    (hp : σ p ∈ S) (hq : σ q ∈ S) (fire : Fires C (pair p q)) : Fires (rename σ C) (indicator S) := by
+  obtain ⟨k,g,lookup,op,on'⟩ := fire
+  have rel : ∀ i, pair p q i=true → indicator S (σ i)=true := by
+    intro i hi
+    rcases (of_decide_eq_true hi : i=p ∨ i=q) with rfl|rfl
+    · exact decide_eq_true hp
+    · exact decide_eq_true hq
+  have active := wire_mono C (fun g h => (hm g h).1) (pair p q) (fun i => indicator S (σ i)) rel (26+k) on'
+  have read : (rename σ C).gates[k]?=some (gateMap σ g) := by simp [rename,List.getElem?_map,lookup]
+  exact ⟨k,gateMap σ g,read,op,(gate_wire σ C k (indicator S)).trans active⟩
 
 /-- Normalize a circuit with a dirty AND to the single fixed independent
 triple by a size-preserving graph automorphism. -/
