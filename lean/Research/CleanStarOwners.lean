@@ -4,7 +4,7 @@ import Research.BicliqueStar
 namespace PlaneResearch.StarOwners
 open PEqualNP.CircuitLowerBounds PlaneResearch.TripleSystems PlaneResearch.BicliqueStar
 
-private lemma wire_mono {n : ℕ} (C : Circuit) (ops : ∀ g ∈ C.gates, g.op=.and ∨ g.op=.or)
+lemma wire_mono {n : ℕ} (C : Circuit) (ops : ∀ g ∈ C.gates, g.op=.and ∨ g.op=.or)
     (x y : Fin n → Bool) (le : ∀ p, x p=true → y p=true) (i : ℕ) : W C i x=true → W C i y=true := by
   apply wiresFrom_mono C.gates ops (List.ofFn x) (List.ofFn y) (by simp) _ i
   intro j
