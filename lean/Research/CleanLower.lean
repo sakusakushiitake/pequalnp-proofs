@@ -5,13 +5,12 @@ import Research.StarOrient
 namespace PlaneResearch.CleanWireModel
 open PEqualNP.CircuitLowerBounds PlaneResearch.StarOwners PlaneResearch.StarCounting PlaneResearch.BicliqueStar
 
-/-- For a square-free graph, a monotone binary circuit with no AND true on
-a nonedge test costs at least the edge count plus the vertex-cover number
-minus one. Only its output responses on singleton and edge inputs are used. -/
-theorem clean_lower {n : ℕ} [Nonempty (Fin n)] (G : SimpleGraph (Fin n)) [DecidableRel G.Adj]
-    (sq : NoSquare G) (C : Circuit) (o : Node n C)
+/-- The square-free graph bounding the AND responses can differ from the
+graph of edges used for the output lower bound. -/
+theorem ambient_lower {n : ℕ} [Nonempty (Fin n)] (G : SimpleGraph (Fin n)) [DecidableRel G.Adj]
+    (H : SimpleGraph (Fin n)) (sq : NoSquare H) (C : Circuit) (o : Node n C)
     (ops : ∀ g ∈ C.gates, g.op=.and ∨ g.op=.or) (two : ∀ g ∈ C.gates, g.inputs.length≤2)
-    (clean : PairClean G C) (off : ∀ p : Fin n, W C o.val (single p)=false)
+    (clean : PairClean H C) (off : ∀ p : Fin n, W C o.val (single p)=false)
     (on' : ∀ u v, G.Adj u v → W C o.val (pair u v)=true) :
     ∃ K : Finset (Fin n), (∀ u v, G.Adj u v → u ∈ K ∨ v ∈ K) ∧
       G.edgeFinset.card+K.card≤C.gates.length+1 := by
@@ -45,10 +44,10 @@ theorem clean_lower {n : ℕ} [Nonempty (Fin n)] (G : SimpleGraph (Fin n)) [Deci
       rcases hits with ⟨ha,hb⟩|⟨ha,hb⟩
       · exact ⟨t,ht,u,ha,v,hb,rfl⟩
       · exact ⟨t,ht,v,ha,u,hb,Sym2.eq_swap⟩
-  have quiet := quiet_of_clean G C clean
+  have quiet := quiet_of_clean H C clean
   have split := first_union C o ops two quiet
-  obtain ⟨m,K,small,meets⟩ := rectangle_counts G sq G.edgeFinset A X Y (family C o)
-    made positive (fun t ht _ ha _ hb => rect_cross G C ops clean (spec t ht) ha hb) cover
+  obtain ⟨m,K,small,meets⟩ := rectangle_counts H sq G.edgeFinset A X Y (family C o)
+    made positive (fun t ht _ ha _ hb => rect_cross H C ops clean (spec t ht) ha hb) cover
     (fun s hs big => (split s hs big).2)
   have sub : ((family C o).filter (fun s => 1<s.card)) ⊆ (forks C o).image (support C) := by
     intro s hs
@@ -71,5 +70,16 @@ theorem clean_lower {n : ℕ} [Nonempty (Fin n)] (G : SimpleGraph (Fin n)) [Deci
   rcases Sym2.mem_iff.mp h with rfl|rfl
   · exact Or.inl hp
   · exact Or.inr hp
+
+/-- If every AND is false on singleton and nonedge tests for a square-free
+graph, its output edge set and a vertex cover together cost at most g+1. -/
+theorem clean_lower {n : ℕ} [Nonempty (Fin n)] (G : SimpleGraph (Fin n)) [DecidableRel G.Adj]
+    (sq : NoSquare G) (C : Circuit) (o : Node n C)
+    (ops : ∀ g ∈ C.gates, g.op=.and ∨ g.op=.or) (two : ∀ g ∈ C.gates, g.inputs.length≤2)
+    (clean : PairClean G C) (off : ∀ p : Fin n, W C o.val (single p)=false)
+    (on' : ∀ u v, G.Adj u v → W C o.val (pair u v)=true) :
+    ∃ K : Finset (Fin n), (∀ u v, G.Adj u v → u ∈ K ∨ v ∈ K) ∧
+      G.edgeFinset.card+K.card≤C.gates.length+1 :=
+  ambient_lower G G sq C o ops two clean off on'
 
 end PlaneResearch.CleanWireModel
