@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Exact gate counts for monotone functions on five inputs</title>
+<style>
+:root{color-scheme:light dark;font-family:system-ui,sans-serif;line-height:1.55}
+body{max-width:52rem;margin:auto;padding:2rem 1.2rem 4rem}h1,h2{line-height:1.18}
+h1{font-size:clamp(1.8rem,5vw,2.65rem);max-width:21em}h2{margin-top:1.8em}
+table{border-collapse:collapse;font-variant-numeric:tabular-nums}th,td{padding:.3rem .8rem;border-bottom:1px solid #8886;text-align:right}
+th:first-child,td:first-child{text-align:left}a{color:light-dark(#145498,#8ac5ff)}
+code,pre{font-family:ui-monospace,monospace}pre{overflow:auto;padding:.7rem;background:#8881}
+.byline{color:light-dark(#535b65,#afbac6)}@media print{body{max-width:none}a{color:inherit}h2{break-after:avoid}}
+</style>
+</head>
+<body>
+<main>
+<h1>Exact gate counts for monotone functions on five inputs</h1>
+<p class="byline">Computational research note · 24 November 2026 · sakusakushiitake</p>
+<p><strong>All 7,581 monotone Boolean functions on five inputs attain the same minimum size with AND and OR alone as with AND, OR and arbitrarily many NOT gates.</strong> This finite result combines exact Boolean synthesis with explicit monotone circuits. The calculation uses the project’s circuit semantics, with free fan-out, fan-in at most two, and one unit of cost per gate, including NOT.</p>
+<h2>Distribution</h2>
+<table>
+<thead><tr><th>Minimum gates</th><th>All functions</th><th>All permutation classes</th><th>Classes essential in all five inputs</th></tr></thead>
+<tbody>
+<tr><td>0</td><td>6</td><td>2</td><td>0</td></tr>
+<tr><td>1</td><td>21</td><td>3</td><td>0</td></tr>
+<tr><td>2</td><td>80</td><td>4</td><td>0</td></tr>
+<tr><td>3</td><td>260</td><td>10</td><td>0</td></tr>
+<tr><td>4</td><td>542</td><td>26</td><td>24</td></tr>
+<tr><td>5</td><td>820</td><td>16</td><td>10</td></tr>
+<tr><td>6</td><td>1,860</td><td>45</td><td>44</td></tr>
+<tr><td>7</td><td>1,664</td><td>32</td><td>30</td></tr>
+<tr><td>8</td><td>1,835</td><td>51</td><td>51</td></tr>
+<tr><td>9</td><td>410</td><td>14</td><td>14</td></tr>
+<tr><td>10</td><td>83</td><td>7</td><td>7</td></tr>
+</tbody><tfoot><tr><th>Total</th><th>7,581</th><th>210</th><th>180</th></tr></tfoot>
+</table>
+<p>A zero-gate circuit can output any one of the five inputs. Under the project’s default value for an absent output wire, it can also output false. Constant true costs one nullary AND. Changing the source convention for constants changes these two rows.</p>
+<h2>Coverage of the lower bounds</h2>
+<p>Monotone Shannon decomposition enumerates 7,581 truth tables, of which 6,894 genuinely depend on all five inputs. The permutation orbits of the project’s 180 representatives are disjoint and cover exactly these 6,894 tables. Each representative has a concrete monotone upper circuit. Lean verifies its gate count, gate types, and evaluation on any input. The 180 lower bounds use a SAT encoding of minimum-size circuits and have each been checked directly with at most one NOT.</p>
+<p>For the remaining possibility of two or more NOT gates, all five essential inputs require at least four non-NOT gates. It therefore suffices to test each exact size from six to one below its monotone upper bound. Boolean duality preserves circuit size and the available number of negations. This leaves 95 classes under permutation and duality. Of the 109 required class-and-size tests, 101 were unsatisfiable as single instances. Eight were split into 84 first-gate cases, all unsatisfiable. The formula uses all 32 input assignments. The code documents the minimal-circuit reductions. A second encoding retaining constants, copies, and unrestricted wiring is being checked independently using LRAT. The lower-bound classification is computational. A kernel proof of every SAT encoding and lower bound remains open.</p>
+<p>For a nonconstant function <i>f</i> with <i>d</i> unused coordinates, form <i>g</i> by taking its conjunction with each of those coordinates. All five inputs are essential for <i>g</i>. Appending <i>d</i> AND gates to any circuit for <i>f</i> gives a circuit for <i>g</i>, so <i>size(f) ≥ size(g) − d</i>. The supplied monotone circuit for each of the 28 remaining nonconstant permutation classes attains that bound on all 32 inputs.</p>
+<h2>Comparison with the 2022 catalog</h2>
+<p>For the 180 essential classes, 161 sizes agree with the circuits in Blair Seidler’s catalog, 17 improve by one gate, one improves by two gates and one improves by three. The comparison recomputes the published circuits and matches their stated true assignments under variable permutation. The largest discrepancy is majority of five, listed with 13 gates. Seidler discusses a pruning rule that can discard circuits with shared intermediates in section 2.1. The comparison establishes shorter explicit circuits relative to that catalog. <a href="https://sites.math.rutgers.edu/~bas312/Research/slp/SLP.pdf">Original paper</a> · <a href="https://sites.math.rutgers.edu/~bas312/Research/slp/MonoCatFileA5var.txt">Original circuit data</a></p>
+<p>A ten-gate majority circuit pairs four inputs as (<i>a,b</i>) and (<i>c,d</i>). Compute <i>p=(a∧b)∨(c∧d)</i> and <i>q=(a∨b)∧(c∨d)</i> in six gates. Then <i>r=p∧q</i> says at least three of the four are true, and <i>s=p∨q</i> says at least two are true. For the fifth input <i>e</i>, the last two gates compute <i>s∧(r∨e)</i>.</p>
+<h2>Reproduce the results</h2>
+<p>The workspace uses Python with <code>python-sat</code> for synthesis and Lean 4.36.0 for the formal circuit model. Run the commands below from the research directory. The first three check catalog coverage, the recorded case partition and the lower-arity circuits. The fourth reruns exact synthesis for one representative with unrestricted negations.</p>
+<pre>python five_input_catalog.py
+python five_extra_negations.py
+python five_lower_arity.py
+python five_input_exact.py fee8e880 --unrestricted</pre>
+<p><a href="five_input_catalog.py">Catalog verification</a> · <a href="five_input_exact.py">Canonical synthesis</a> · <a href="five_input_shard.py">Direct wiring encoding</a> · <a href="five_extra_negation_results.json">Extra-negation cases</a> · <a href="five_lower_arity_circuits.json">Lower-arity circuits</a> · <a href="compare_five_input_catalog.py">Historical comparison</a> · <a href="https://github.com/sakusakushiitake/pequalnp-proofs/blob/0d7c51df38b26c35dec902e433ce6618c7365535/lean/Research/FiveUpperAtlas.lean">Lean upper-bound theorem</a></p>
+</main>
+</body>
+</html>

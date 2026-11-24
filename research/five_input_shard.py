@@ -24,7 +24,7 @@ def one_hot(cnf,ids,choices):
     cnf.extend(CardEnc.equals(choices,1,vpool=ids).clauses)
 
 
-def instance(target,size):
+def instance(target,size,not_limit=1):
     cnf,ids=CNF(),IDPool()
     rows=range(32)
     values=[[ids.id(('wire',j,x)) for x in rows] for j in range(5+size)]
@@ -54,7 +54,8 @@ def instance(target,size):
                              ('or',[[v,-a],[v,-b],[-v,a,b]]),
                              ('not',[[v,a],[-v,-a]]),('zero',[[-v]]),('one',[[v]])]:
                 cnf.extend([[-ops[op],*clause] for clause in rules])
-    cnf.extend(CardEnc.atmost(nots,1,vpool=ids).clauses)
+    if not_limit is not None:
+        cnf.extend(CardEnc.atmost(nots,not_limit,vpool=ids).clauses)
     return cnf
 
 
