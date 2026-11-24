@@ -1,4 +1,6 @@
 import Mathlib
+import PEqualNP.Defs.CoverPromise
+import PEqualNP.Defs.MetaComplexityLgpMono
 import PEqualNP.MetaComplexity.Helpers.CoverCircuitGraph
 import PEqualNP.MetaComplexity.Helpers.ForestBound
 
@@ -374,6 +376,48 @@ theorem forestTarget : ∀ (n : ℕ) (G : SimpleGraph (Fin n)) [DecidableRel G.A
       · simp [o],(dlegal g hg).2⟩,le_rfl,dfun⟩
     have lower := PEqualNP.MetaComplexity.Helpers.Forest.forest_bound n T.card D.size G
       forest nonempty least sizeD
+    change C.size+1 ≤ _ at upper
+    omega
+  · let C : Circuit := ⟨[],n⟩
+    refine ⟨C,by simp [C],?_,by simp [C,Circuit.size],by simp [C]⟩
+    intro x
+    have none : ¬∃ u v, G.Adj u v ∧ x u=true ∧ x v=true := by
+      rintro ⟨u,v,a,_⟩
+      exact nonempty ⟨u,v,a⟩
+    simp [C,Circuit.eval,Circuit.wires,none,List.getD]
+
+end CoverStar1031
+
+namespace CoverStar1031
+open PEqualNP.CircuitLowerBounds PEqualNP.MetaComplexity PEqualNP.MetaComplexity.CoverCircuit
+
+theorem implication : (∀ (n t : ℕ) (G : SimpleGraph (Fin n)) (C : PEqualNP.CircuitLowerBounds.Circuit), (∃ u v : Fin n, G.Adj u v) → (∀ a b c d : Fin n, a ≠ b → a ≠ c → a ≠ d → b ≠ c → b ≠ d → c ≠ d → G.Adj a b → G.Adj b c → G.Adj c d → ¬ G.Adj d a) → (∃ S : Finset (Fin n), PEqualNP.MetaComplexity.CoverPromise.IsVertexCover G S ∧ S.card = t) → (∀ S : Finset (Fin n), PEqualNP.MetaComplexity.CoverPromise.IsVertexCover G S → t ≤ S.card) → PEqualNP.MetaComplexity.Monotone2 C → (∀ x : Fin n → Bool, (C.eval (List.ofFn x) = true ↔ ∃ u v : Fin n, G.Adj u v ∧ x u = true ∧ x v = true)) → G.edgeSet.ncard + t ≤ C.size + 1) → (∀ (n : ℕ) (G : SimpleGraph (Fin n)) [DecidableRel G.Adj], (∀ a b c : Fin n, G.Adj a b → G.Adj b c → ¬ G.Adj c a) → (∀ a b c d : Fin n, G.Adj a b → G.Adj b c → G.Adj c d → G.Adj d a → a = c ∨ b = d) → ∃ C : PEqualNP.CircuitLowerBounds.Circuit, (∀ g ∈ C.gates, (g.op = PEqualNP.CircuitLowerBounds.GateOp.and ∨ g.op = PEqualNP.CircuitLowerBounds.GateOp.or) ∧ g.inputs.length ≤ 2) ∧ (∀ x : Fin n → Bool, C.eval (List.ofFn x) = decide (∃ i j : Fin n, G.Adj i j ∧ x i = true ∧ x j = true)) ∧ (∀ D : PEqualNP.CircuitLowerBounds.Circuit, (∀ g ∈ D.gates, (g.op = PEqualNP.CircuitLowerBounds.GateOp.and ∨ g.op = PEqualNP.CircuitLowerBounds.GateOp.or) ∧ g.inputs.length ≤ 2) → (∀ x : Fin n → Bool, D.eval (List.ofFn x) = decide (∃ i j : Fin n, G.Adj i j ∧ x i = true ∧ x j = true)) → C.size ≤ D.size) ∧ ∀ (t : ℕ) (g : PEqualNP.CircuitLowerBounds.Gate), C.gates[t]? = some g → g.op = PEqualNP.CircuitLowerBounds.GateOp.and → ∃ c : Fin n, (∃ u v : Fin n, G.Adj u v ∧ ((C.wires (List.ofFn (fun k : Fin n => decide (k = u ∨ k = v)))).getD (n + t) false = true ∧ ∀ (t' : ℕ) (g' : PEqualNP.CircuitLowerBounds.Gate), C.gates[t']? = some g' → g'.op = PEqualNP.CircuitLowerBounds.GateOp.and → Relation.TransGen (fun a b : ℕ => a < b ∧ ∃ (k : ℕ) (h : PEqualNP.CircuitLowerBounds.Gate), b = n + k ∧ C.gates[k]? = some h ∧ a ∈ h.inputs) (n + t') (n + t) → (C.wires (List.ofFn (fun k : Fin n => decide (k = u ∨ k = v)))).getD (n + t') false = false)) ∧ ∀ u v : Fin n, G.Adj u v → ((C.wires (List.ofFn (fun k : Fin n => decide (k = u ∨ k = v)))).getD (n + t) false = true ∧ ∀ (t' : ℕ) (g' : PEqualNP.CircuitLowerBounds.Gate), C.gates[t']? = some g' → g'.op = PEqualNP.CircuitLowerBounds.GateOp.and → Relation.TransGen (fun a b : ℕ => a < b ∧ ∃ (k : ℕ) (h : PEqualNP.CircuitLowerBounds.Gate), b = n + k ∧ C.gates[k]? = some h ∧ a ∈ h.inputs) (n + t') (n + t) → (C.wires (List.ofFn (fun k : Fin n => decide (k = u ∨ k = v)))).getD (n + t') false = false) → u = c ∨ v = c) := by
+
+  classical
+  intro lowerBound n G inst _ noFour
+  by_cases nonempty : ∃ u v, G.Adj u v
+  · let P (k : ℕ) := ∃ T : Finset (Fin n), Covers G T ∧ T.card=k
+    have existsP : ∃ k, P k := ⟨_,Finset.univ,fun _ _ _ => Or.inl (Finset.mem_univ _),rfl⟩
+    obtain ⟨T,cov,sz⟩ := Nat.find_spec existsP
+    have least (U : Finset (Fin n)) (cover : Covers G U) : T.card ≤ U.card := by
+      rw [sz]
+      exact Nat.find_min' existsP ⟨U,cover,rfl⟩
+    let C := coverCircuit n (graph_edges n G) (graph_cover T)
+    have ops := gates_ops n (graph_edges n G) (graph_cover T)
+    have computes := circuitFun_eq_graph n _ _ G (graph_hG n G) (graph_hE n G) (graph_hT n G T cov)
+    have upper := size_le n (graph_edges n G) (graph_cover T) (graph_edges_ne_nil n G nonempty)
+    rw [graph_edges_length,graph_cover_length] at upper
+    refine ⟨C, fun g hg => ⟨(ops g hg).1.symm,by have h := (ops g hg).2; omega⟩,
+      fun x => congrFun computes x,?_,coverProfile G T cov least⟩
+    intro D dlegal dfun
+
+    have lower := lowerBound n T.card G D nonempty (by
+      intro a b c d _ ac _ _ bd _ ab bc cd da
+      exact (noFour a b c d ab bc cd da).elim ac bd)
+      ⟨T,cov,rfl⟩ least dlegal (fun x => by rw [dfun]; exact decide_eq_true_iff)
+    have card : G.edgeFinset.card = G.edgeSet.ncard := by
+      rw [←Set.ncard_coe_finset,SimpleGraph.coe_edgeFinset]
+    rw [←card] at lower
     change C.size+1 ≤ _ at upper
     omega
   · let C : Circuit := ⟨[],n⟩
