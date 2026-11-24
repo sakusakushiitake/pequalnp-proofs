@@ -1,0 +1,483 @@
+{
+  "claim": "L-meta-1031 via the L-meta-612 size bound on seven vertices after isolated vertices are omitted",
+  "scope": "Nonforests of girth at least five with seven active vertices, including disconnected graphs",
+  "basis": "Binary monotone AND and OR. Only minimum live circuits need be encoded.",
+  "verification": "Lean 4.36.0 Std LRAT.check via lean --run verified each generated CNF; the encoding-to-circuit argument is external to Lean.",
+  "classes": [
+    {
+      "graph6": "Fhc?G",
+      "edges": [
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          4
+        ],
+        [
+          1,
+          2
+        ],
+        [
+          2,
+          3
+        ],
+        [
+          3,
+          4
+        ],
+        [
+          5,
+          6
+        ]
+      ],
+      "cover": 4,
+      "cover_circuit_gates": 9,
+      "labelled_graphs": 252,
+      "cnfs": [
+        {
+          "gates": 6,
+          "lrat_actions": 20019,
+          "sha256": "db656e71ea718601321d8d9ef3f1b9921db48859a992204a3fbe4d73ef48462a",
+          "method": "boundary CNF"
+        },
+        {
+          "gates": 7,
+          "lrat_actions": 60027,
+          "sha256": "f05df1a80a5da8a472e9e3845b71a60f6991dd2b83bbfdf770b611c68d671838",
+          "method": "boundary CNF"
+        },
+        {
+          "gates": 8,
+          "lrat_actions": 260309,
+          "sha256": "16c98451cbc69d05ae4059341911b9f42baf7dd1c26f6db6c14d73cbe52b1295",
+          "method": "boundary CNF"
+        }
+      ]
+    },
+    {
+      "graph6": "Fpa?g",
+      "edges": [
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          2
+        ],
+        [
+          0,
+          4
+        ],
+        [
+          0,
+          5
+        ],
+        [
+          2,
+          3
+        ],
+        [
+          3,
+          6
+        ],
+        [
+          5,
+          6
+        ]
+      ],
+      "cover": 3,
+      "cover_circuit_gates": 9,
+      "labelled_graphs": 1260,
+      "cnfs": [
+        {
+          "gates": 6,
+          "lrat_actions": 16780,
+          "sha256": "9e291124a582fcd2b5d2c23daed6b5c6f92f85850435c73601a9a1811dd56957",
+          "method": "boundary CNF"
+        },
+        {
+          "gates": 7,
+          "lrat_actions": 83043,
+          "sha256": "fe975bb7a685af87bbadb1e2ced75a1f1c401359c694965d628ad7393660559b",
+          "method": "boundary CNF"
+        },
+        {
+          "gates": 8,
+          "lrat_actions": 353969,
+          "sha256": "13960f6975553b8e2c7552d6c0f283928bcfb93e53ba8c7514ea463b56c16b62",
+          "method": "boundary CNF"
+        }
+      ]
+    },
+    {
+      "graph6": "Fh_gG",
+      "edges": [
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          4
+        ],
+        [
+          1,
+          2
+        ],
+        [
+          2,
+          3
+        ],
+        [
+          2,
+          5
+        ],
+        [
+          4,
+          5
+        ],
+        [
+          5,
+          6
+        ]
+      ],
+      "cover": 3,
+      "cover_circuit_gates": 9,
+      "labelled_graphs": 2520,
+      "cnfs": [
+        {
+          "gates": 6,
+          "lrat_actions": 22429,
+          "sha256": "09000a4519740804e16fbb8ed2c596b9e20e7505e030147d4e0c4141a1d542ea",
+          "method": "boundary CNF"
+        },
+        {
+          "gates": 7,
+          "lrat_actions": 77969,
+          "sha256": "987be7a80018e41087aa3a2d9ceb229dd8023f197f05ba7846e636a60d9227d7",
+          "method": "boundary CNF"
+        },
+        {
+          "gates": 8,
+          "lrat_actions": 443946,
+          "sha256": "a988e6119bdc32aa20531e5cbdc0dde605debf29697f7000f430465159061c3c",
+          "method": "boundary CNF"
+        }
+      ]
+    },
+    {
+      "graph6": "FXAGg",
+      "edges": [
+        [
+          0,
+          2
+        ],
+        [
+          0,
+          5
+        ],
+        [
+          1,
+          2
+        ],
+        [
+          2,
+          3
+        ],
+        [
+          3,
+          6
+        ],
+        [
+          4,
+          5
+        ],
+        [
+          5,
+          6
+        ]
+      ],
+      "cover": 3,
+      "cover_circuit_gates": 9,
+      "labelled_graphs": 2520,
+      "cnfs": [
+        {
+          "gates": 6,
+          "lrat_actions": 16544,
+          "sha256": "dda3f40e259713d2038b6f732b51db52ec8918321cc149d00c74a00fb2523b12",
+          "method": "boundary CNF"
+        },
+        {
+          "gates": 7,
+          "lrat_actions": 86771,
+          "sha256": "a9c6fbbde0b1009b7d5033565e56a53c81ca81e52080d6a2cac235c8f84b507f",
+          "method": "boundary CNF"
+        },
+        {
+          "gates": 8,
+          "lrat_actions": 430888,
+          "sha256": "7af2e390096aa72f2e9c137358639c87b9dbde600b8ab6fcbe55037c09740563",
+          "method": "boundary CNF"
+        }
+      ]
+    },
+    {
+      "graph6": "FK_h_",
+      "edges": [
+        [
+          0,
+          3
+        ],
+        [
+          0,
+          4
+        ],
+        [
+          1,
+          2
+        ],
+        [
+          2,
+          5
+        ],
+        [
+          2,
+          6
+        ],
+        [
+          3,
+          6
+        ],
+        [
+          4,
+          5
+        ]
+      ],
+      "cover": 3,
+      "cover_circuit_gates": 9,
+      "labelled_graphs": 2520,
+      "cnfs": [
+        {
+          "gates": 6,
+          "lrat_actions": 19808,
+          "sha256": "7c156ee4acb4e2ce2fe33f425f3f3550a69d7cc57b9bfad5aef069f46083f783",
+          "method": "boundary CNF"
+        },
+        {
+          "gates": 7,
+          "lrat_actions": 89901,
+          "sha256": "55c6903bacf70311d57ebe305be3519d6d8d207409bcd6a549a05f1036d1d021",
+          "method": "boundary CNF"
+        },
+        {
+          "gates": 8,
+          "lrat_actions": 413254,
+          "sha256": "e8e970721e78abdb85f69c27f509d45c0dc7d11c0db797d1aea7f9a4c0d46985",
+          "method": "boundary CNF"
+        }
+      ]
+    },
+    {
+      "graph6": "FPq?g",
+      "edges": [
+        [
+          0,
+          2
+        ],
+        [
+          0,
+          4
+        ],
+        [
+          0,
+          5
+        ],
+        [
+          1,
+          4
+        ],
+        [
+          2,
+          3
+        ],
+        [
+          3,
+          6
+        ],
+        [
+          5,
+          6
+        ]
+      ],
+      "cover": 4,
+      "cover_circuit_gates": 10,
+      "labelled_graphs": 2520,
+      "cnfs": [
+        {
+          "gates": 6,
+          "lrat_actions": 27284,
+          "sha256": "999d6d40a7237f376ec9de1d42cf66832f37ca785ad8bdc16211df050dff67dd",
+          "method": "boundary CNF"
+        },
+        {
+          "gates": 7,
+          "lrat_actions": 94393,
+          "sha256": "3a89a020747ae2cea64204fff5a1fcf4b22252580e5a889439bd29b694b0cfc3",
+          "method": "boundary CNF"
+        },
+        {
+          "gates": 8,
+          "lrat_actions": 528336,
+          "sha256": "00fac29ee3a460ebf3af896cc1223995a0178aa4a79435162a79821f30b585cd",
+          "method": "boundary CNF"
+        },
+        {
+          "gates": 9,
+          "lrat_actions": 3471246,
+          "sha256": "48163e958d7f5385ff07cb091002ef09cc20d0f72a2287e9fc57e03229f07d4a",
+          "method": "boundary CNF"
+        }
+      ]
+    },
+    {
+      "graph6": "FhCKG",
+      "edges": [
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          6
+        ],
+        [
+          1,
+          2
+        ],
+        [
+          2,
+          3
+        ],
+        [
+          3,
+          4
+        ],
+        [
+          4,
+          5
+        ],
+        [
+          5,
+          6
+        ]
+      ],
+      "cover": 4,
+      "cover_circuit_gates": 10,
+      "labelled_graphs": 360,
+      "cnfs": [
+        {
+          "gates": 6,
+          "lrat_actions": 17293,
+          "sha256": "45efcbb40839af97372500d33a5edd33f1d3a9a30edf150958aa00fbb3b38fcc",
+          "method": "boundary CNF"
+        },
+        {
+          "gates": 7,
+          "lrat_actions": 54910,
+          "sha256": "d7f16bb45d2f6125984c2116d893581d9633437e47bc7a3c88a3ff3b73e8882c",
+          "method": "boundary CNF"
+        },
+        {
+          "gates": 8,
+          "lrat_actions": 225012,
+          "sha256": "505fe037400b4a100446c5f17605d1dc5d1be831b75aa2874e5c931630818d98",
+          "method": "boundary CNF"
+        },
+        {
+          "gates": 9,
+          "lrat_actions": 1097594,
+          "sha256": "572378e13283c5f2158a480704cf1f76fe260c8ec6c66f2b1113f46d59e3c26f",
+          "method": "boundary CNF"
+        }
+      ]
+    },
+    {
+      "graph6": "FhEK_",
+      "edges": [
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          5
+        ],
+        [
+          0,
+          6
+        ],
+        [
+          1,
+          2
+        ],
+        [
+          2,
+          3
+        ],
+        [
+          3,
+          4
+        ],
+        [
+          3,
+          6
+        ],
+        [
+          4,
+          5
+        ]
+      ],
+      "cover": 4,
+      "cover_circuit_gates": 11,
+      "labelled_graphs": 1260,
+      "cnfs": [
+        {
+          "gates": 6,
+          "lrat_actions": 23132,
+          "sha256": "dd5575bc6d7aa9d9e99ae6638853c8c1499b74d77636c4052f403ae9c7dd4959",
+          "method": "boundary CNF"
+        },
+        {
+          "gates": 7,
+          "lrat_actions": 79325,
+          "sha256": "e60007f410edbb37439e4d82bd22cc5cb76bb9654ef1ea671481aa267c6885ed",
+          "method": "boundary CNF"
+        },
+        {
+          "gates": 8,
+          "lrat_actions": 366423,
+          "sha256": "cbfcb0f39ff2710087a13305b600fe890e906957a1c68ce7b4dd3a060fe2c50f",
+          "method": "boundary CNF"
+        },
+        {
+          "gates": 9,
+          "lrat_actions": 2744387,
+          "sha256": "0f216bcb56ded3e210526c210355fe52a41caf03cbd02f0d89c6fc2b505317ac",
+          "method": "boundary CNF"
+        },
+        {
+          "gates": 10,
+          "lrat_actions": 7270171,
+          "sha256": "559b9dc574286158bfc7f345f8954dd6534ee55b7101ad1dc3d301f75825debf",
+          "method": "boundary CNF with restriction and first-gate bounds on at most six vertices"
+        }
+      ]
+    }
+  ],
+  "checked_cnfs": 28,
+  "total_lrat_actions": 18395163,
+  "labelled_graphs": 13212
+}
